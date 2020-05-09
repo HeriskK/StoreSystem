@@ -4,10 +4,13 @@ using UnityEngine;
 
 public abstract class Classes
 {
-    protected Classificacao tipoClassificacao;
+    protected ClassObject tipoClassificacao;
+
+    public UIManager uiManager;
+    public Classes classScript;
 
     protected string name;
-    public string Nome // Contrutor para o nome, trocando valor protected por public.
+    public string Name // Contrutor para o nome, trocando valor protected por public.
     {
         get
         {
@@ -16,8 +19,6 @@ public abstract class Classes
         set
         {
             name = value;
-
-            //Debug.Log("Nome da poção: " + nome);
         }
     }
 
@@ -31,34 +32,32 @@ public abstract class Classes
         set
         {
             preco = value;
-
-            //Debug.Log("Nome da poção: " + nome);
         }
     }
 
     public virtual void Examinar()
     {
-        Debug.Log("Isto é um(a): " + name);
+        Debug.Log("Seu inventário: ");
+
         string dados;
-        dados = string.Format("{0} é um(a) {1}", name, tipoClassificacao); //______ é um(a) _______
+        dados = string.Format("{0} - Objeto da classe {1} que custou {2}", classScript.Name, tipoClassificacao, classScript.Preco);
         Debug.Log(dados);
     }
 
     public abstract void ChangeValue(float value);
-
 }
 
 public class Weapons : Classes
 {
     public bool accumulative = true; //...
 
-    public Weapons(float preco)
+    public Weapons(string name, float preco)
     {
-        tipoClassificacao = Classificacao.Weapons; // Weapons tem um tipo de classificação, é uma ARMA.
+        tipoClassificacao = ClassObject.Weapons; // Weapons tem um tipo de classificação, é uma ARMA.
 
-        this.preco = Preco;
+        this.name = name;
+        this.preco = preco;
     }
-
     public override void ChangeValue(float value)
     {
         value = preco;
@@ -67,10 +66,11 @@ public class Weapons : Classes
 
 public class Armor : Classes
 {
-    public Armor(float preco)
+    public Armor(string name, float preco)
     {
-        tipoClassificacao = Classificacao.Armor; // Weapons tem um tipo de classificação, é uma ARMADURA.
+        tipoClassificacao = ClassObject.Armor; // Weapons tem um tipo de classificação, é uma ARMADURA.
 
+        this.name = name;
         this.preco = preco;
     }
     public override void ChangeValue(float value)
@@ -81,10 +81,11 @@ public class Armor : Classes
 
 public class Equipment : Classes
 {
-    public Equipment(float preco)
+    public Equipment(string name, float preco)
     {
-        tipoClassificacao = Classificacao.Equipment; // Weapons tem um tipo de classificação, é um EQUIPAMENTO.
+        tipoClassificacao = ClassObject.Equipment; // Weapons tem um tipo de classificação, é um EQUIPAMENTO.
 
+        this.name = name;
         this.preco = preco;
     }
     public override void ChangeValue(float value)

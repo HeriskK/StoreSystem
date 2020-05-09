@@ -4,159 +4,117 @@ using UnityEngine;
 
 public class StoreManager : MonoBehaviour
 {
-    /*
+
     public UIManager uiManager;
+    public SelectorScript selectorScript;
+    public BtnsManager btnsManager;         // Referência ao script que controla os botões.
 
-    public float valorTemporario;
+    public int selectedObject = 0;
 
-    public static float dinheiro = 10000; // static = modificavel em qualquer script (Colocar nome da clase e da variavel). 
+    public int contadorWeapons;
 
-    // Criação de Items:
+    Weapons sword = new Weapons("Sword", 150);
+    Weapons dagger = new Weapons("Dagger", 60);
+    Weapons ace = new Weapons("Ace", 80);
+    Weapons bow = new Weapons("Bow", 110);
 
-    public Weapons weapon = new Weapons(0); // O valor sera mudado conforme o que esta determinado no parâmetro do botão.
+    Armor helmet = new Armor("Helmet", 60);
+    Armor bodyshield = new Armor("Bodyshield", 140);
+    Armor pants = new Armor("Pants", 60);
+    Armor boots = new Armor("Boots", 40);
 
-    public Armor armor = new Armor(0);
+    Equipment poison = new Equipment("Poison", 40);
+    Equipment ring = new Equipment("Ring", 120);
+    Equipment necklace = new Equipment("Necklace", 80);
+    Equipment magicStone = new Equipment("MagicStone", 450);
 
-    public Equipment equipment = new Equipment(0);
-
-    // --------------------------------------------------------------------------- COMPRAR WEAPONS
-    public void BuyWeapons(float value) //...Atualizar o dinheiro
+    private void Start()
     {
-        if (weapon.accumulative == false)
+        uiManager.AlertUpdate(0); // Zera o valor do texto, como descrito na função no UIManager.
+    }
+
+    private void Update()
+    {
+        //SelectorBoxControllerWeapons(selectedObjectTemporary); // Função que ativa o seletor de objeto (Weapons).
+
+        contadorWeapons = btnsManager.contadorWeapons;
+
+        Debug.Log("Valor: " + selectedObject);
+    }
+
+    public void ExchangePurchasedObject(float price) // ------------------------------------------------------- Função para trocar objeto comprado.
+    {
+        if (selectedObject == 0) // Se for 0... Ou seja, nada foi comprado.
+        {
+            HaveHowToPay(price);
+        }
+
+        if (selectedObject != 0) // Se for DIFERENTE DE 0... 
         {
             uiManager.panelChangeItem.SetActive(true); // Ativa o painel de troca de item.
-
-            valorTemporario = value;
-
-            return; // 
-        }
-        else
-        {
-            // weapon.name = name; // Atualiza o nome...
-            weapon.Preco = value;
-
-            HaveHowToPay(weapon);
-
-            weapon.accumulative = false;
         }
     }
 
-    public void ChangeAccumulativeValue()
+    public void ChangeSelectedObjectValue() // ---------------------------------------------------------------- Função ativada pelo botão de 'Confirm'.
     {
-        dinheiro -= valorTemporario;
+        selectedObject = 0; // Retorna o valor de 0, ou seja, não há nada comprado.
 
-        uiManager.panelChangeItem.SetActive(false);
-
-        HaveHowToPay(weapon);
+        uiManager.panelChangeItem.SetActive(false); // Desativa o painel.
     }
 
-    // --------------------------------------------------------------------------- COMPRAR ARMOR
-    public void BuyArmor(float value)
+    public void CancelChanceObject() // ----------------------------------------------------------------------- Função ativada pelo botão de 'Cancel'.
     {
-        //armor.name = name; // Atualiza o nome...
-        armor.Preco = value;
-        HaveHowToPay(armor);
+        uiManager.panelChangeItem.SetActive(false); // Desativa o painel.
     }
 
-    // --------------------------------------------------------------------------- COMPRAR EQUIPMENT
-    public void BuyEquipment(float value)
+    public void BuySomething(int option) // ------------------------------------------------------------------- Função chamada pelo botão de 'BUY'.
     {
-        //equipment.name = name; // Atualiza o nome...
-        equipment.Preco = value;
-        HaveHowToPay(equipment);
-    }
 
-
-    private void HaveHowToPay(Classes classe) // Função que verifica se ele tem dinheiro.
-    {
-        if (classe.Preco < dinheiro) // Se ele tem...
-        {
-            dinheiro -= classe.Preco; // Desconta o valor.
-
-            uiManager.MoneyUpdate();
-        }
-        else // Senão...
-        {
-            uiManager.AvisosUpdate(1); // Mensagem de que não há dinheiro.
-        }
-    }
-    */
-
-    public UIManager uiManager;
-
-    public bool accumulative = true;
-
-    Weapons espada = new Weapons(100);
-    Weapons adaga = new Weapons(150);
-    Weapons foice = new Weapons(200);
-    Weapons arco = new Weapons(250);
-
-    Armor helmet = new Armor(50);
-    Armor bodyshield = new Armor(100);
-    Armor pants = new Armor(150);
-    Armor boots = new Armor(200);
-
-    Equipment poison = new Equipment(50);
-    Equipment ring = new Equipment(100);
-    Equipment necklace = new Equipment(150);
-    Equipment magicStone = new Equipment(200);
-
-    public void ChangeAccumulativeValue()
-    {
-        if (accumulative == false) // Se for falso... 
-        {
-            uiManager.panelChangeItem.SetActive(true); // Abre o painel.
-            return;
-        }
-    }
-
-    public void ChangeAccumulativeValueToTrue()
-    {
-        accumulative = true;
-    }
-
-    public void BuySomething(int option)
-    {
         // --------------------------------------------------------------- COMPRAR WEAPONS
 
-        if (option == 1) // Espada
+        if (contadorWeapons == 0) // Se o contador estiver 0, ou seja, não está selecionado, então...
         {
-            ChangeAccumulativeValue();
+            selectorScript.SelectorBoxControllerWeapons(0); // O seletor "desaparece".
+        }
 
-            HaveHowToPay(espada.Preco);
-            ClientManager.singleton.MyInventory.Add(espada);
+        if (option == 1) // Espada 
+        {
+            ExchangePurchasedObject(sword.Preco);
 
-            accumulative = false;
+            //ClientManager.singleton.MyInventory.Add(sword);
+
+            selectedObject = 1;
+            selectorScript.SelectorBoxControllerWeapons(1); // Chama a função que seleciona a caixa ...
         }
 
         if (option == 2) // Adaga
         {
-            ChangeAccumulativeValue();
+            ExchangePurchasedObject(dagger.Preco);
 
-            HaveHowToPay(adaga.Preco);
-            ClientManager.singleton.MyInventory.Add(adaga);
+            //ClientManager.singleton.MyInventory.Add(dagger);
 
-            accumulative = false;
+            selectedObject = 2;
+            selectorScript.SelectorBoxControllerWeapons(2);
         }
 
         if (option == 3) // Foice
         {
-            ChangeAccumulativeValue();
+            ExchangePurchasedObject(ace.Preco);
 
-            HaveHowToPay(foice.Preco);
-            ClientManager.singleton.MyInventory.Add(foice);
+            //ClientManager.singleton.MyInventory.Add(ace);
 
-            accumulative = false;
+            selectedObject = 3;
+            selectorScript.SelectorBoxControllerWeapons(3);
         }
 
         if (option == 4) // Arco
         {
-            ChangeAccumulativeValue();
+            ExchangePurchasedObject(bow.Preco);
 
-            HaveHowToPay(arco.Preco);
-            ClientManager.singleton.MyInventory.Add(arco);
+            //ClientManager.singleton.MyInventory.Add(bow);
 
-            accumulative = false;
+            selectedObject = 4;
+            selectorScript.SelectorBoxControllerWeapons(4);
         }
 
         // --------------------------------------------------------------- COMPRAR ARMOR
@@ -164,25 +122,33 @@ public class StoreManager : MonoBehaviour
         if (option == 5) // Helmet
         {
             HaveHowToPay(helmet.Preco);
-            ClientManager.singleton.MyInventory.Add(helmet);
+            selectorScript.SelectorBoxControllerArmor(1);
+
+            //ClientManager.singleton.MyInventory.Add(helmet);
         }
 
         if (option == 6) // Bodyshield
         {
             HaveHowToPay(bodyshield.Preco);
-            ClientManager.singleton.MyInventory.Add(bodyshield);
+            selectorScript.SelectorBoxControllerArmor(2);
+
+            //ClientManager.singleton.MyInventory.Add(bodyshield);
         }
 
         if (option == 7) // Paints
         {
             HaveHowToPay(pants.Preco);
-            ClientManager.singleton.MyInventory.Add(pants);
+            selectorScript.SelectorBoxControllerArmor(3);
+
+            //ClientManager.singleton.MyInventory.Add(pants);
         }
 
         if (option == 8) // Boots
         {
             HaveHowToPay(boots.Preco);
-            ClientManager.singleton.MyInventory.Add(boots);
+            selectorScript.SelectorBoxControllerArmor(4);
+
+            //ClientManager.singleton.MyInventory.Add(boots);
         }
 
         // --------------------------------------------------------------- COMPRAR EQUIPMENT
@@ -190,29 +156,37 @@ public class StoreManager : MonoBehaviour
         if (option == 9) // Poison
         {
             HaveHowToPay(poison.Preco);
-            ClientManager.singleton.MyInventory.Add(poison);
+            selectorScript.SelectorBoxControllerEquipment(1);
+
+            //ClientManager.singleton.MyInventory.Add(poison);
         }
 
         if (option == 10) // Ring
         {
             HaveHowToPay(ring.Preco);
-            ClientManager.singleton.MyInventory.Add(ring);
+            selectorScript.SelectorBoxControllerEquipment(2);
+
+            //ClientManager.singleton.MyInventory.Add(ring);
         }
 
         if (option == 11) // Necklace
         {
             HaveHowToPay(necklace.Preco);
-            ClientManager.singleton.MyInventory.Add(necklace);
+            selectorScript.SelectorBoxControllerEquipment(3);
+
+            //ClientManager.singleton.MyInventory.Add(necklace);
         }
 
         if (option == 12) //Magic Stone
         {
             HaveHowToPay(magicStone.Preco);
-            ClientManager.singleton.MyInventory.Add(magicStone);
+            selectorScript.SelectorBoxControllerEquipment(4);
+
+            //ClientManager.singleton.MyInventory.Add(magicStone);
         }
     }
 
-    private void HaveHowToPay(float price) // Função que verifica se ele tem dinheiro.
+    private void HaveHowToPay(float price) // ----------------------------------------------------- Função que verifica se ele tem dinheiro.
     {
         if (price < ClientManager.singleton.money) // Se ele tem...
         {
@@ -222,7 +196,7 @@ public class StoreManager : MonoBehaviour
         }
         else // Senão...
         {
-            uiManager.AvisosUpdate(1); // Mensagem de que não há dinheiro.
+            uiManager.AlertUpdate(1); // Mensagem de que não há dinheiro.
         }
     }
 

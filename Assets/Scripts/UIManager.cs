@@ -15,16 +15,26 @@ public class UIManager : MonoBehaviour
         MoneyUpdate();
     }
 
-    public void AvisosUpdate(int parametro)
+    public void AlertUpdate(int parametro)
     {
-        if(parametro == 1) // Se for 1... (Não tem dinheiro)
+        if (parametro == 0) // Se for 0... (Texto setado em "", para começar com a caixa de texto em branco).
+        {
+            avisosText.text = "";
+        }
+
+        if (parametro == 1) // Se for 1... (Não tem dinheiro).
         {
             avisosText.text = "Você não tem dinheiro!";
-        }   
+        }
+    }
+
+    public void PurchaseAlert()
+    {
+
     }
 
     public void MoneyUpdate()
     {
-        dinheiroText.text = ClientManager.singleton.money.ToString();
+        dinheiroText.text = ClientManager.singleton.money.ToString() + " Ⴔ";
     }
 }

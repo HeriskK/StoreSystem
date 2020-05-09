@@ -2,7 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Classificacao
+public enum ClassObject
 {
     Weapons, Armor, Equipment
+}
+
+public enum NameObject
+{
+    Sword, 
 }

@@ -15,22 +15,38 @@ public class ClientManager : MonoBehaviour
         NoDestroy();
     }
 
-    void NoDestroy() //criando singleton
+    private void Update()
     {
-        //Faz com que o game object que possui esta classe não seja destruído ao trocar de cena
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            InventoryCounter();
+        }
+    }
+
+    void NoDestroy() // Criando singleton
+    {
+        //Faz com que o game object que possui esta classe não seja destruído ao trocar de cena.
         DontDestroyOnLoad(gameObject);
 
         if (singleton == null && singleton != this)
         {
             singleton = this;
 
-            //Faz com que o game object que possui esta classe não seja destruído ao trocar de cena
+            //Faz com que o game object que possui esta classe não seja destruído ao trocar de cena.
             DontDestroyOnLoad(gameObject);
         }
         else
         {
 
             Destroy(gameObject);
+        }
+    }
+
+    public void InventoryCounter()
+    {
+        for(int x = 0; x < MyInventory.Count; x++)
+        {
+            MyInventory[x].Examinar();
         }
     }
 }
